@@ -1,3 +1,13 @@
 {
-  "type": "module"
+  "functions": {
+    "api/track.js": {
+      "runtime": "vercel-node@latest"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/track",
+      "dest": "/api/track.js"
+    }
+  ]
 }
