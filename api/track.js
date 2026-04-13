@@ -1,19 +1,25 @@
-// api/track.js
 export default async function handler(req, res) {
     const { id } = req.query;
-    
-    // Eklentinin yazdığı tam adrese gidiyoruz
+    const userAgent = req.headers['user-agent'] || '';
+
+    // Gmail botlarını ve önizleme servislerini engelle
+    const isBot = userAgent.includes('GoogleImageProxy') || 
+                  userAgent.includes('Gmail') || 
+                  userAgent.includes('bot');
+
     const FIREBASE_URL = `https://mailtakip-default-rtdb.firebaseio.com/mailler/${id}.json`;
 
-    if (id && id !== 'test_reis') {
+    // Sadece ID varsa VE gelen istek bir bot değilse Firebase'i güncelle
+    if (id && !isBot && id !== 'test_reis') {
         try {
             await fetch(FIREBASE_URL, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    acilmami: true, // Durumu güncelle!
+                    acilmami: true, 
                     acilmaTarihi: new Date().toISOString(),
-                    durum: "Okundu"
+                    durum: "Okundu",
+                    cihaz: userAgent // Kimin açtığını görmek için ekledik
                 })
             });
         } catch (error) {
@@ -21,7 +27,6 @@ export default async function handler(req, res) {
         }
     }
 
-    // Şeffaf piksel gönder
     const pixel = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", "base64");
     res.setHeader("Content-Type", "image/png");
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
