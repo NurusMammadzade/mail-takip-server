@@ -10,4 +10,10 @@
       "dest": "/api/track.js"
     }
   ]
+  "name": "mail-takip-server",
+  "version": "1.0.0",
+  "main": "api/track.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7" 
+  }
 }
