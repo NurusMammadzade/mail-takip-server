@@ -9,7 +9,7 @@
       "src": "/api/track",
       "dest": "/api/track.js"
     }
-  ]
+  ],
   "name": "mail-takip-server",
   "version": "1.0.0",
   "main": "api/track.js",
