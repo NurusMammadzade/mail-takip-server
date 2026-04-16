@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mail Takip Panel</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
+        .mail-card { background: #1e1e1e; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #444; }
+        .okundu { border-left-color: #4CAF50; }
+        .beklemede { border-left-color: #FFC107; }
+    </style>
+</head>
+<body>
+    <h1>📧 Canlı Mail Takip Sistemi</h1>
+    <div id="liste">Yükleniyor...</div>
+
+    <script>
+        // SENİN FİREBASE URL'N
+        const DB_URL = "https://mailtakip-default-rtdb.firebaseio.com/mailler.json";
+
+        async function verileriGetir() {
+            try {
+                const res = await fetch(DB_URL);
+                const data = await res.json();
+                const listeDiv = document.getElementById('liste');
+                listeDiv.innerHTML = '';
+
+                if (!data) {
+                    listeDiv.innerHTML = "Henüz kayıt yok reis.";
+                    return;
+                }
+
+                Object.keys(data).reverse().forEach(key => {
+                    const mail = data[key];
+                    const div = document.createElement('div');
+                    div.className = `mail-card ${mail.acilmami ? 'okundu' : 'beklemede'}`;
+                    div.innerHTML = `
+                        <strong>ID:</strong> ${mail.id} <br>
+                        <strong>Durum:</strong> ${mail.durum} <br>
+                        <strong>Aktif mi:</strong> ${mail.aktif ? '✅ Evet' : '❌ Hayır'} <br>
+                        <strong>Okunma:</strong> ${mail.acilmami ? '👀 OKUNDU' : '⏳ Bekliyor'} <br>
+                        <small>${mail.tarih}</small>
+                    `;
+                    listeDiv.appendChild(div);
+                });
+            } catch (e) {
+                document.getElementById('liste').innerHTML = "Database bağlantı hatası!";
+            }
+        }
+        setInterval(verileriGetir, 3000); // 3 saniyede bir güncelle
+        verileriGetir();
+    </script>
+</body>
+</html>
