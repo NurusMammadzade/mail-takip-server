@@ -4,6 +4,18 @@ export default async function handler(req, res) {
 
     const FIREBASE_URL = `https://mailtakip-default-rtdb.firebaseio.com/mailler/${id}.json`;
 
+    // 🛡️ BEKÇİ KONTROLÜ
+    if (data && data.aktif === false) {
+        // Eğer kilit henüz açılmadıysa, sessizce çık. 
+        // Bu sayede senin tarayıcının tetiklemeleri Firebase'i güncellemez.
+        return res.status(200).send(pixel); 
+    }
+    
+    // Eğer aktif: true ise, o zaman 'Okundu' işlemini yap...
+    if (data && data.aktif === true && data.acilmami === false) {
+        // Firebase'i güncelleme kodları buraya...
+    }
+    
     try {
         const response = await fetch(FIREBASE_URL);
         const data = await response.json();
